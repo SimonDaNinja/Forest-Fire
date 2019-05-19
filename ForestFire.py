@@ -73,7 +73,7 @@ class Forest:
             self.fire.add(site)
             neighbours = self.GetNeighbours(site)
 
-            fireQueue |= ((neighbours&self.forest)-fireQueue)
+            fireQueue |= (neighbours&self.forest)
 
     def GetNeighbours(self,site):
         row = site[0]
