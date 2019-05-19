@@ -53,8 +53,8 @@ class Forest:
                 else:
                     aArray = [[site[0],site[1]] for site in self.forest]
                     a.set_offsets(aArray)
-                    if len(self.fire)>0:
-                        b = plt.scatter(fireCol,fireRow,color=(1,.5,0))
+                if len(self.fire)>0:
+                    b = plt.scatter(fireCol,fireRow,color=(1,.5,0))
                 if len(self.fire)>0:
                     plt.pause(.1)
                     b.remove()
@@ -94,4 +94,4 @@ if __name__ == '__main__':
     matchDropRate = .1
     growthRate = .001
     numberOfIterations = 100000
-    forest = Forest(gridHeight, gridWidth, matchDropRate, growthRate, numberOfIterations, plot = False)
+    forest = Forest(gridHeight, gridWidth, matchDropRate, growthRate, numberOfIterations, plot = True)
