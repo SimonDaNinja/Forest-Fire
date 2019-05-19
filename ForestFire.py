@@ -73,27 +73,16 @@ class Forest:
                         fireQueue.append(neighbour)
 
     def GetNeighbours(self,site):
-        # Define the von neumann neighbours, using periodic boundary conditions
         row = site[0]
         col = site[1]
-        neighbours = []
-        #This is ugly and full of special cases at the moment
-        if col == 0:
-            neighbours.append((row,self.gridHeight-1))
-        else:
-            neighbours.append((row,col-1))
-        if col == (self.gridHeight-1):
-            neighbours.append((row,0))
-        else:
-            neighbours.append((row,col+1))
-        if row == 0:
-            neighbours.append((self.gridWidth-1,col))
-        else:
-            neighbours.append((row-1,col))
-        if row == (self.gridWidth-1):
-            neighbours.append((0,col))
-        else:
-            neighbours.append((row+1,col))
+
+        leftNeighbourCol = (col-1)%self.gridWidth
+        rightNeighbourCol = (col+1)%self.gridWidth
+        topNeighbourRow = (row-1)%self.gridHeight
+        bottomNeighbourRow = (row+1)%self.gridHeight
+
+        neighbours = [(row,leftNeighbourCol),(row,rightNeighbourCol),(topNeighbourRow,col),(bottomNeighbourRow,col)]
+
         return neighbours
 
 if __name__ == '__main__':
