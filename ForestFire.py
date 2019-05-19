@@ -40,6 +40,8 @@ class Forest:
                 lastFireSize = len(self.fire)
             if i%1==0:
                 print("current iteration: {}\ncurrent number of trees: {}\nlast fire size: {}".format(i,len(self.forest),lastFireSize))
+
+            self.history.append((self.fire.copy(),self.forest.copy(),self.free.copy()))
             # This is where animation happens
             # TODO: optimize and make nicer
             if self.plot:
@@ -68,7 +70,6 @@ class Forest:
             fireQueue.add(dropSite)
         while len(fireQueue)>0:
             site = fireQueue.pop()
-            print(site in self.forest)
             self.forest.remove(site)
             self.fire.add(site)
             neighbours = self.GetNeighbours(site)
