@@ -18,6 +18,8 @@ class Forest:
     def Run(self, numberOfIterations):
         plotStarted = False
         lastFireSize = 0
+        # This is some preparation for animation
+        # TODO: optimize and make nicer
         if self.plot:
             figure = plt.figure()
             plt.axis([-1, self.gridHeight, -1, self.gridWidth])
@@ -38,6 +40,8 @@ class Forest:
                 lastFireSize = len(self.fire)
             if i%1==0:
                 print("current iteration: {}\ncurrent number of trees: {}\nlast fire size: {}".format(i,len(self.forest),lastFireSize))
+            # This is where animation happens
+            # TODO: optimize and make nicer
             if self.plot:
                 fireRow = [site[0] for site in self.fire]
                 fireCol = [site[1] for site in self.fire]
@@ -59,18 +63,17 @@ class Forest:
 
 
     def DropMatch(self,dropSite):
-        fireQueue = []
+        fireQueue = set()
         if dropSite in self.forest:
-            fireQueue.append(dropSite)
+            fireQueue.add(dropSite)
         while len(fireQueue)>0:
             site = fireQueue.pop()
+            print(site in self.forest)
             self.forest.remove(site)
             self.fire.add(site)
             neighbours = self.GetNeighbours(site)
-            for neighbour in neighbours:
-                if neighbour in self.forest:
-                    if neighbour not in fireQueue:
-                        fireQueue.append(neighbour)
+
+            fireQueue |= ((neighbours&self.forest)-fireQueue)
 
     def GetNeighbours(self,site):
         row = site[0]
@@ -81,7 +84,7 @@ class Forest:
         topNeighbourRow = (row-1)%self.gridHeight
         bottomNeighbourRow = (row+1)%self.gridHeight
 
-        neighbours = [(row,leftNeighbourCol),(row,rightNeighbourCol),(topNeighbourRow,col),(bottomNeighbourRow,col)]
+        neighbours = {(row,leftNeighbourCol),(row,rightNeighbourCol),(topNeighbourRow,col),(bottomNeighbourRow,col)}
 
         return neighbours
 
@@ -91,4 +94,4 @@ if __name__ == '__main__':
     matchDropRate = .1
     growthRate = .001
     numberOfIterations = 100000
-    forest = Forest(gridHeight, gridWidth, matchDropRate, growthRate, numberOfIterations, plot = True)
+    forest = Forest(gridHeight, gridWidth, matchDropRate, growthRate, numberOfIterations, plot = False)
