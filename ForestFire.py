@@ -55,7 +55,7 @@ class Forest:
                     plt.pause(.1)
                     b.remove()
                 else:
-                    plt.pause(0.0001)
+                    plt.pause(0.000001)
 
 
     def DropMatch(self,dropSite):
@@ -77,6 +77,7 @@ class Forest:
         row = site[0]
         col = site[1]
         neighbours = []
+        #This is ugly and full of special cases at the moment
         if col == 0:
             neighbours.append((row,self.gridHeight-1))
         else:
