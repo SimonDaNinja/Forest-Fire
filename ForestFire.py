@@ -38,9 +38,6 @@ class Forest:
                 lastFireSize = len(self.fire)
             if i%1==0:
                 print("current iteration: {}\ncurrent number of trees: {}\nlast fire size: {}".format(i,len(self.forest),lastFireSize))
-                #pass
-            #fireList = list(self.fire)
-            #forestList = list(self.forest)
             if self.plot:
                 fireRow = [site[0] for site in self.fire]
                 fireCol = [site[1] for site in self.fire]
@@ -49,14 +46,10 @@ class Forest:
                 if not plotStarted:
                     plotStarted = True
                     a = plt.scatter(forestCol,forestRow,color=(0,.6,0))
-                    #b = plt.scatter(fireCol,fireRow,color=(1,0,0))
                 else:
                     aArray = [[site[0],site[1]] for site in self.forest]
                     a.set_offsets(aArray)
                     if len(self.fire)>0:
-                        #bArray = [[site[0],site[1]] for site in self.fire]
-                    #else:
-                        #bArray = [[]]
                         b = plt.scatter(fireCol,fireRow,color=(1,.5,0))
                 if len(self.fire)>0:
                     plt.pause(.1)
@@ -100,8 +93,6 @@ class Forest:
             neighbours.append((0,col))
         else:
             neighbours.append((row+1,col))
-        #print(site)
-        #print(neighbours)
         return neighbours
 
 if __name__ == '__main__':
