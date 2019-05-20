@@ -111,8 +111,8 @@ if __name__ == '__main__':
     gridWidth = 100
     matchDropRate = .1
     growthRate = .001
-    numberOfIterations = 100
+    numberOfIterations = 3000
     plot = True # Note: this makes the program much slower
     storeHistory = False
-    forest = Forest(gridHeight, gridWidth, matchDropRate, growthRate, numberOfIterations, plot = True, storeHistory = False)
+    forest = Forest(gridHeight, gridWidth, matchDropRate, growthRate, numberOfIterations, plot = plot, storeHistory = storeHistory)
     print('terminated')
