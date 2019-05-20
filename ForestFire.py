@@ -54,6 +54,9 @@ class Forest:
                 self.DropMatch(dropSite)
             if len(self.fire)>0:
                 lastFireSize = len(self.fire)
+
+            # Output some hopefully useful information during runtime
+            # TODO: select more useful information
             if i%1==0:
                 print("current iteration: {}\ncurrent number of trees: {}\nlast fire size: {}".format(i,len(self.trees),lastFireSize))
 
