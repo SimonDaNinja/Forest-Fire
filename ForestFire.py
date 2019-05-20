@@ -39,13 +39,6 @@ class Forest:
             newTreePositions = set(random.sample(self.empty,numberOfNewTrees))
             self.trees |= newTreePositions
             self.empty -= newTreePositions
-            """
-            for position in self.empty.copy():
-                r = random.uniform(0,1)
-                if r < growthRate:
-                    self.empty.remove(position)
-                    self.trees.add(position)
-            """
 
             # Drop match
             r = random.uniform(0,1)
