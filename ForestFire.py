@@ -3,78 +3,95 @@ import matplotlib.pyplot as plt
 
 class Forest:
 
-    def __init__(self, gridHeight, gridWidth, matchDropRate, growthRate, numberOfIterations, plot = True):
+    def __init__(self, gridHeight, gridWidth, matchDropRate, growthRate, numberOfIterations, plot = True, storeHistory = False):
         self.gridHeight = gridHeight
         self.gridWidth = gridWidth
         self.matchDropRate = matchDropRate
         self.growthRate = growthRate
         self.plot = plot
+        self.storeHistory = storeHistory
         self.fire = set()
-        self.forest = set()
-        self.free = set([(i,j) for j in range(gridWidth) for i in range(gridHeight)])
-        self.history = []
+        self.trees = set()
+        self.empty = set([(i,j) for j in range(gridWidth) for i in range(gridHeight)])
+        #TODO: pre-allocate memory more efficiently, or store history in other way to avoid performance drops
+        if storeHistory:
+            self.history = []
         self.Run(numberOfIterations)
 
     def Run(self, numberOfIterations):
         plotStarted = False
         lastFireSize = 0
+
         # This is some preparation for animation
-        # TODO: optimize and make nicer
+        # TODO: optimize animation and make code nicer
         if self.plot:
             figure = plt.figure()
             plt.axis([-1, self.gridHeight, -1, self.gridWidth])
+
         for i in range(numberOfIterations):
-            for site in self.fire.copy():
-                self.fire.remove(site)
-                self.free.add(site)
-            for position in self.free.copy():
+
+            # Remove fires
+            self.empty |= self.fire
+            self.fire = set()
+
+            # Grow trees
+            numberOfNewTrees = sum([1 for i in range(len(self.empty)) if random.uniform(0,1)<growthRate])
+            newTreePositions = set(random.sample(self.empty,numberOfNewTrees))
+            self.trees |= newTreePositions
+            self.empty -= newTreePositions
+            """
+            for position in self.empty.copy():
                 r = random.uniform(0,1)
                 if r < growthRate:
-                    self.free.remove(position)
-                    self.forest.add(position)
+                    self.empty.remove(position)
+                    self.trees.add(position)
+            """
+
+            # Drop match
             r = random.uniform(0,1)
             if r < matchDropRate:
-                dropSite = random.sample(self.forest, 1)[0]
+                dropSite = random.sample(self.trees, 1)[0]
                 self.DropMatch(dropSite)
             if len(self.fire)>0:
                 lastFireSize = len(self.fire)
             if i%1==0:
-                print("current iteration: {}\ncurrent number of trees: {}\nlast fire size: {}".format(i,len(self.forest),lastFireSize))
+                print("current iteration: {}\ncurrent number of trees: {}\nlast fire size: {}".format(i,len(self.trees),lastFireSize))
 
-            self.history.append((self.fire.copy(),self.forest.copy(),self.free.copy()))
+            # Store state in history
+            if self.storeHistory:
+                self.history.append((self.fire.copy(),self.trees.copy(),self.empty.copy()))
+
             # This is where animation happens
-            # TODO: optimize and make nicer
+            # TODO: optimize animation and make code nicer
             if self.plot:
                 fireRow = [site[0] for site in self.fire]
                 fireCol = [site[1] for site in self.fire]
-                forestRow = [site[0] for site in self.forest]
-                forestCol = [site[1] for site in self.forest]
+                treesRow = [site[0] for site in self.trees]
+                treesCol = [site[1] for site in self.trees]
                 if not plotStarted:
                     plotStarted = True
-                    a = plt.scatter(forestCol,forestRow,color=(0,.6,0))
+                    a = plt.scatter(treesCol,treesRow,color=(0,.6,0))
                 else:
-                    aArray = [[site[0],site[1]] for site in self.forest]
+                    aArray = [[site[0],site[1]] for site in self.trees]
                     a.set_offsets(aArray)
                 if len(self.fire)>0:
                     b = plt.scatter(fireCol,fireRow,color=(1,.5,0))
+                plt.pause(0.000001)
                 if len(self.fire)>0:
-                    plt.pause(.1)
                     b.remove()
-                else:
-                    plt.pause(0.000001)
 
 
     def DropMatch(self,dropSite):
         fireQueue = set()
-        if dropSite in self.forest:
+        if dropSite in self.trees:
             fireQueue.add(dropSite)
-        while len(fireQueue)>0:
+        while fireQueue:
             site = fireQueue.pop()
-            self.forest.remove(site)
+            self.trees.remove(site)
             self.fire.add(site)
             neighbours = self.GetNeighbours(site)
 
-            fireQueue |= (neighbours&self.forest)
+            fireQueue |= (neighbours&self.trees)
 
     def GetNeighbours(self,site):
         row = site[0]
@@ -94,5 +111,8 @@ if __name__ == '__main__':
     gridWidth = 100
     matchDropRate = .1
     growthRate = .001
-    numberOfIterations = 100000
-    forest = Forest(gridHeight, gridWidth, matchDropRate, growthRate, numberOfIterations, plot = True)
+    numberOfIterations = 100
+    plot = True # Note: this makes the program much slower
+    storeHistory = False
+    forest = Forest(gridHeight, gridWidth, matchDropRate, growthRate, numberOfIterations, plot = True, storeHistory = False)
+    print('terminated')
